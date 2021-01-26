@@ -1,0 +1,47 @@
+---
+project: Dtest-P
+kind: PIPELINE
+name: Recreate
+icon: organization,left, is-orange
+enabled: true
+concurrency: 10
+workspace:
+  endpoint: ''
+  image: ''
+  registry: ''
+  path: ''
+  autoCloneForTrigger: false
+  limits:
+    cpu: 1.0
+    memory: 512
+stageOrder:
+- Stage0
+stages:
+  Stage0:
+    taskOrder:
+    - Secret,Delete,Deploy
+    tasks:
+      Secret:
+        type: K8S
+        endpoints:
+          scm: Dtest-GIT1
+          kubernetesServer: Dtest-Kube3
+        input:
+          action: APPLY
+          timeout: 5
+          filePath: dtest-sec.yaml
+          scmConstants: {
+            }
+          yaml: ''
+      Delete:
+        type: Pipeline
+        input:
+          pipeline: Delete
+          inputProperties: {
+            }
+      Deploy:
+        type: Pipeline
+        input:
+          pipeline: Deploy
+          inputProperties: {
+            }
