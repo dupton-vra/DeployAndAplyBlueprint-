@@ -22,17 +22,11 @@ stages:
     - Secret,Delete,Deploy
     tasks:
       Secret:
-        type: K8S
-        endpoints:
-          scm: Dtest-GIT1
-          kubernetesServer: Dtest-Kube3
+        type: Pipeline
         input:
-          action: APPLY
-          timeout: 5
-          filePath: dtest-sec.yaml
-          scmConstants: {
+          pipeline: Secret
+          inputProperties: {
             }
-          yaml: ''
       Delete:
         type: Pipeline
         input:
@@ -44,4 +38,6 @@ stages:
         input:
           pipeline: Deploy
           inputProperties: {
+            }
+
             }
