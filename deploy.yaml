@@ -1,8 +1,8 @@
 ---
 project: Dtest-P
 kind: PIPELINE
-name: Deploy
-icon: organization,left, is-warning is-solid
+name: Recreate
+icon: organization,left, is-orange
 enabled: true
 concurrency: 10
 workspace:
@@ -19,31 +19,26 @@ stageOrder:
 stages:
   Stage0:
     taskOrder:
+    - Secret
+    - Delete
     - Deploy
-    - Service
     tasks:
-      Service:
-        type: K8S
-        endpoints:
-          scm: Dtest-GIT1
-          kubernetesServer: Dtest-Kube3
+      Secret:
+        type: Pipeline
         input:
-          action: CREATE
-          timeout: 5
-          filePath: dtest-s.yaml
-          scmConstants: {
+          pipeline: Secret
+          inputProperties: {
             }
-          yaml: ''
+      Delete:
+        type: Pipeline
+        input:
+          pipeline: Delete
+          inputProperties: {
+            }
       Deploy:
-        type: K8S
-        endpoints:
-          scm: Dtest-GIT1
-          kubernetesServer: Dtest-Kube3
+        type: Pipeline
         input:
-          action: CREATE
-          timeout: 5
-          continueOnConflict: false
-          filePath: dtest-d-creds.yaml
-          scmConstants: {
+          pipeline: Deploy
+          inputProperties: {
             }
-          yaml: ''
+
